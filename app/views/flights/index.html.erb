@@ -1,0 +1,30 @@
+<%= form_with url: flights_path, method: :get do |form| %>
+    <%= form.label :departure_code, "Departure:" %>
+    <%= select_tag(:departure_code, options_for_select(@airport_options, selected: params[:departure_code])) %>
+
+    <%= form.label :arrival_code, "Arrival:" %>
+    <%= select_tag(:arrival_code, options_for_select(@airport_options, selected: params[:arrival_code])) %>
+
+    <%= form.label :passengers_number, "Number of passengers:" %>
+    <%= form.select :passengers_number, [1,2,3,4], selected: params[:passengers_number] %>
+
+    <%= form.label :date, "Date:" %>
+    <%= select_tag(:date, options_for_select(@start_date_options, selected: params[:date])) %>
+
+    <%= form.submit "Search" %>
+<% end %>
+
+<% if @matching_flights.nil? %>
+    <h2>Search for the flights for you.</h2>
+<% elsif @matching_flights.empty? %>
+    <h2>No matching flights.</h2>
+<% else %>
+    <%= form_with url: new_booking_path, method: :get do |form| %>
+        <%= form.collection_radio_buttons :flight_id, @matching_flights, :id, lambda{ |i| i.start.strftime("%H:%M") } %>
+        <%= form.hidden_field :number_of_tickets, value: params[:passengers_number] %>
+    <br>
+    <%= form.submit "Book" %>
+    <% end %>
+<% end %>
+<br>
+<%= link_to "Clear", root_path %>

@@ -1,0 +1,25 @@
+<h2>Book tickets</h2>
+
+Flight ID: <%= @flight.id %><br>
+DateTime: <%= @flight.start %><br>
+From: <%= @flight.departure_airport.code %><br>
+To: <%= @flight.arrival_airport.code %><br>
+<br>
+<%= form_with model: @booking do |form| %>
+    <% i = 0 %>
+    <% @passengers.each do |passenger| %>
+        <%= form.fields_for passenger, index: i do |sub_form| %>
+            <h4>Passenger <%= i = i + 1 %></h4>
+            <%= sub_form.label :name, "Name:" %>
+            <%= sub_form.text_field :name %><br>
+            <%= sub_form.label :email, "Email:" %>
+            <%= sub_form.text_field :email %><br>
+        <% end %>
+        <br>
+        <%= form.hidden_field :flight_id, value: @flight.id %>
+        <%= form.hidden_field :number_of_tickets, value: params[:number_of_tickets] %>
+    <% end %>
+    <%= form.submit "Confirm" %>
+<% end %>
+<br>
+<%= link_to "Cancel", root_path %>
